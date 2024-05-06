@@ -24,14 +24,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                .csrf().disable() //отключаем защиту от межсайтовой подделки запросов
+                .csrf().disable() //отключаем защиту от межсайтовой подделки запросов
                 .authorizeRequests()
+                .antMatchers("/api/**").permitAll()
                 .antMatchers("/", "/start", "/login", "/auth/**", "/error", "/fillUsers", "/fillRoles", "/truncate", "/logout")
                 .permitAll()
                 .antMatchers("/admin", "/update", "/delete", "/new").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
-
+//                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
+
+//                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .successHandler(successUserHandler)

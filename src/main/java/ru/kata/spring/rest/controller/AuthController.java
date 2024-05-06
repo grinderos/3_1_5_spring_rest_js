@@ -28,9 +28,10 @@ public class AuthController {
     private List<Role> roles;
 
     @Autowired
-    public AuthController(UserDetailsServiceImpl userService,
-                          SecurityService securityService,
-                          UserValidator userValidator) {
+    public AuthController(UserDetailsServiceImpl userService
+            ,SecurityService securityService
+            ,UserValidator userValidator
+    ) {
         this.userService = userService;
         this.securityService = securityService;
         this.userValidator = userValidator;

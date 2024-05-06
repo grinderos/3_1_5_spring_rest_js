@@ -103,7 +103,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "User:" +
+        return "\nUser:" +
                 "\nid       = " + id +
                 "\nusername = " + username +
                 "\nfirstname= " + firstname +
