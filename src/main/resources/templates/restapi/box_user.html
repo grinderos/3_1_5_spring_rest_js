@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <ul class="navbar-nav mb-auto">
             <li class="navbar-brand">
-                <form th:replace="restapi/box_user :: fragment_user_top_info"/>
+                <form th:replace="restapi/box_user :: fragment_top_info_user"/>
             </li>
         </ul>
         <ul th:replace="restapi/box_main :: fragment_logout"/>
@@ -13,7 +13,7 @@
 <!--^^^ верхняя панель user ^^^-->
 
 <!--vvv ссылка на user vvv-->
-<form th:fragment="fragment_user_top_info" action="/user"
+<form th:fragment="fragment_top_info_user" action="/user"
       method="GET">
     <button type="submit"
             class="btn">
@@ -29,7 +29,7 @@
             <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
         </svg>
     </button>
-    Вы вошли как:
+
     <a th:replace="restapi/box_main :: fragment_top_panel_info"/>
 </form>
 <!--^^^ ссылка на user ^^^-->
@@ -98,22 +98,7 @@
                 <th>Роль</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td th:text="${thisUser.id}"></td>
-                <td th:text="${thisUser.username}"></td>
-                <td th:text="${thisUser.firstname}"></td>
-                <td th:text="${thisUser.lastname}"></td>
-                <td th:text="${thisUser.age}"></td>
-                <td th:text="${thisUser.email}"></td>
-                <td>
-                    <th:block th:each="role: ${thisUser.roles}">
-                                        <span type="checkbox"
-                                              th:text="${' '+role.name.substring(5)+' '}">
-                                        </span>
-                    </th:block>
-                </td>
-            </tr>
+            <tbody id="table_user_info">
             </tbody>
         </table>
     </div>

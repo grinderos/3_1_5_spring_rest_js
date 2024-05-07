@@ -10,6 +10,11 @@
 </head>
 <!--^^^ head ^^^-->
 
+<!--vvv top_panel_info vvv-->
+<a th:fragment="fragment_top_panel_info" id="top_panel_info">
+</a>
+<!--^^^ top_panel_info ^^^-->
+
 <!--vvv logout vvv-->
 <ul th:fragment="fragment_logout" class="navbar-nav ms-auto">
     <li class="nav-item">
@@ -47,16 +52,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script th:src="@{/frontGenerate.js}"></script>
+
+
 </th:block>
 <!--^^^ scripts ^^^-->
 
-<!--vvv top_panel_info vvv-->
-<a th:fragment="fragment_top_panel_info">
-<span class="navbar-brand mb-0 h1"><b sec:authentication="name"/></span>
-<span class="navbar-brand mb-0 h1">| Обладает ролью:</span>
-<th:block th:each="role: ${#authentication.authorities}">
-    <span class="navbar-brand mb-0 h1"
-          th:text="${' '+role.getAuthority().substring(5)+' '}"></span>
-</th:block>
-</a>
-<!--^^^ top_panel_info ^^^-->

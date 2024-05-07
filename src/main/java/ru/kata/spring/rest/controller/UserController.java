@@ -20,12 +20,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public String getUserInfo(Model model, Principal principal) {
-        User thisUser = userService.findByUsername(principal.getName());
-        model.addAttribute("thisUser", thisUser);
-        return "/user";
-    }
+//    @GetMapping("/user")
+//    public String getUserInfo(Model model, Principal principal) {
+//        User thisUser = userService.findByUsername(principal.getName());
+//        model.addAttribute("thisUser", thisUser);
+//        return "/user";
+//    }
 
     @GetMapping("/fillUsers")
     public String fillUsers() {

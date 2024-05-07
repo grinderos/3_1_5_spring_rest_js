@@ -35,9 +35,15 @@ public class RestApiController {
     }
 
     @GetMapping("/getUser/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
         System.out.println("\ngetUser -->\n"+ResponseEntity.ok(userService.findUserById(id)));
         return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @GetMapping("/getCurrentUser")
+    public ResponseEntity<User> getCurrentUser(Authentication auth) {
+        System.out.println("\ngetCurrentUser -->\n"+ResponseEntity.ok(userService.findByUsername(auth.getName())));
+        return ResponseEntity.ok(userService.findByUsername(auth.getName()));
     }
 
     @PostMapping("/add")
