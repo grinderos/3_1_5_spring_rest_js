@@ -171,7 +171,7 @@
                         aria-label="Закрыть">
                 </button>
             </div>
-            <form class="offset-1 col-10">
+            <form class="offset-1 col-10" id="formDelete">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="id_del"
@@ -181,6 +181,7 @@
                                name="id"
                                class="form-control"
                                id="id_del"
+                               disabled
                                readonly/>
                     </div>
                     <div class="mb-3">
@@ -236,6 +237,20 @@
                     <div class="mb-3">
                         <label class="font-weight-bold"
                         >Роль</label>
+                        <a id="delete_check_roles">
+                            <select multiple size="2"
+                                    class="form-control"
+                                    id="role_checkbox_del"
+                                    name="roles"
+                                    disabled>
+                            </select>
+                            <!--                        <input class="form-check-input"-->
+                            <!--                               type="checkbox"-->
+                            <!--                               value=""-->
+                            <!--                               text=""-->
+                            <!--                               id="role_checkbox_upd"-->
+                            <!--                               />-->
+                        </a>
 <!--                        <h6 class="form-heading text-center" id="allRoles">-->
 <!--                            <th:block th:each="role: ${user.roles}">-->
 <!--                                <span type="checkbox"-->
@@ -248,13 +263,15 @@
                 </div>
                 <div class="modal-footer justify-content-evenly">
                     <button type="button"
+                            id="deleteClose"
                             class="btn btn-secondary"
                             data-bs-dismiss="modal"
-                    >Отмена
+                    >Закрыть
                     </button>
-                    <input type="submit"
-                           class="btn btn-danger"
-                           value="Удалить"/>
+                    <button type="submit"
+                            class="btn btn-danger"
+                    >Удалить
+                    </button>
                 </div>
             </form><!-- POST /delete -->
         </div><!-- modal-content -->

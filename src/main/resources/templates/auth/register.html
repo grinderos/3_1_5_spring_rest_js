@@ -16,7 +16,7 @@
           method="POST"
           th:object="${user}"
           th:action="@{/auth/register_new_user}">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
         <div class="d-grid gap-2 col-4 mx-auto">
             <th:block th:each="msg : ${messages}">

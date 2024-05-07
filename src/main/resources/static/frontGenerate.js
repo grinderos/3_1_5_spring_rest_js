@@ -4,6 +4,8 @@ const URLUpdate = "api/update";
 const top_panel_info = document.getElementById('top_panel_info');
 const table_user_info = document.getElementById('table_user_info');
 let formEdit = document.forms["formEdit"];
+let formDelete = document.forms["formDelete"];
+let currId;
 
 //vvv--- user methods ---vvv
 getCurrentUser();
@@ -12,7 +14,7 @@ function getCurrentUser() {
     fetch(URLCurrentUser)
         .then((res) => res.json())
         .then((currentUser) => {
-
+            currId = currentUser.id;
             let currentRoles = getCurrentRoles(currentUser.roles);
             top_panel_info.innerHTML = `
                                         <span>Вы вошли как: <b>${currentUser.username}</b></span 
@@ -51,6 +53,7 @@ function getUsers() {
         return response.json();
     }).then(function (users) {
         const users_table_fill = document.getElementById('users_table_fill');
+        users_table_fill.innerHTML = "";
         for (let user of users) {
             let userRoles = getCurrentRoles(user.roles);
 
@@ -68,7 +71,7 @@ function getUsers() {
                           data-bs-toogle="modal"
                           data-bs-target="#editModal"
                           onclick="modalEdit(${user.id})">
-                                Edit
+                                Редактировать
                             </button>
                         </td>
                         <td>
@@ -76,8 +79,8 @@ function getUsers() {
                             class="btn btn-danger btn-ml" 
                             data-toggle="modal" 
                             data-target="#deleteModal" 
-                            onclick="deleteModal(${user.id})">
-                                Delete
+                            onclick="modalDelete(${user.id})">
+                                Удалить
                             </button>
                         </td>
                     </tr>`;
@@ -105,12 +108,17 @@ function getUsers() {
 
 async function modalEdit(id) {
     const modalEdit = new bootstrap.Modal(document.querySelector('#modalEdit'));
-    await fill_modalEdit(formEdit, modalEdit, id);
-    loadRolesForEdit();
+    await fill_modal(formEdit, modalEdit, id);
+    loadUserRoles("upd");
 }
 
-function loadRolesForEdit() {
-    let edit_check_roles = document.getElementById("role_checkbox_upd");
+function loadUserRoles(where) {
+    let edit_check_roles;
+    if(where=="upd"){
+    edit_check_roles = document.getElementById("role_checkbox_upd");
+    } else {
+        edit_check_roles = document.getElementById("role_checkbox_del");
+    }
     edit_check_roles.innerHTML = "";
 
     fetch("/api/findAllRoles")
@@ -136,9 +144,9 @@ function loadRolesForEdit() {
         .catch(error => console.error(error));
 }
 
-window.addEventListener("load", loadRolesForEdit);
+window.addEventListener("load", loadUserRoles);
 
-async function fill_modalEdit(form, modal, id) {
+async function fill_modal(form, modal, id) {
     modal.show();
     let user = await getUserById(id);
     form.id.value = user.id;
@@ -164,7 +172,7 @@ function editUser() {
         for (let i = 0; i < formEdit.roles.options.length; i++) {
             if (formEdit.roles.options[i].selected) rolesForEdit.push({
                 id: formEdit.roles.options[i].value,
-                role: "ROLE_" + formEdit.roles.options[i].text
+                name: "ROLE_" + formEdit.roles.options[i].text
             });
             console.log(rolesForEdit);
         }
@@ -186,9 +194,34 @@ function editUser() {
             })
         }).then(() => {
             $('#editClose').click();
-            getAllUsers();
+            getUsers();
         });
     });
 }
 editUser();
+
+async function modalDelete(id) {
+    const modalDelete = new bootstrap.Modal(document.querySelector('#modalDelete'));
+    await fill_modal(formDelete, modalDelete, id);
+    loadUserRoles("del");
+}
+
+function deleteUser() {
+    formDelete.addEventListener("submit", ev => {
+        ev.preventDefault();
+        fetch("/api/delete/" + formDelete.id.value, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(() => {
+            $('#deleteClose').click();
+            if(formDelete.id.value==currId){
+                window.location.assign("/logout");
+            }
+            getUsers();
+        });
+    });
+}
+deleteUser();
 //^^^--- admin methods ---^^^
