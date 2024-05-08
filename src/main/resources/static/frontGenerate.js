@@ -1,14 +1,19 @@
 const URLCurrentUser = "/api/getCurrentUser";
 const URLListUsers = "/api/getUsers";
+const URLGetUserById = "/api/getUser/";
 const URLUpdate = "api/update";
+const URLDelete = "/api/delete/";
+const URLAddNew = "/api/add/";
+const URLAllRoles = "/api/findAllRoles";
+const URLLogout = "/logout";
 const top_panel_info = document.getElementById('top_panel_info');
 const table_user_info = document.getElementById('table_user_info');
 let formEdit = document.forms["formEdit"];
 let formDelete = document.forms["formDelete"];
+let formNew = document.forms["formNew"];
 let currId;
 
-//vvv--- user methods ---vvv
-
+//vvv --- user  methods --- vvv
 
 // <<< метод получения текущего пользователя >>>
 function getCurrentUser() {
@@ -35,6 +40,7 @@ function getCurrentUser() {
                                 </tr>`;
         });
 }
+
 getCurrentUser();
 
 
@@ -47,21 +53,28 @@ function getCurrentRoles(roles) {
     return currentRoles;
 }
 
+/*  ^^^ --- user     methods --- ^^^
+----------------------------------------------------------------
+    vvv --- admin    methods --- vvv*/
+
+window.addEventListener("load", loadUserRoles);
 
 // <<< метод получения списка имеющихся ролей из БД >>>
 function loadUserRoles(where) {
     let edit_check_roles;
-    if(where=="upd"){
+    if (where == "upd") {
         edit_check_roles = document.getElementById("role_checkbox_upd");
-    } else {
+    } else if (where == "del") {
         edit_check_roles = document.getElementById("role_checkbox_del");
+    } else {
+        edit_check_roles = document.getElementById("role_checkbox_new");
     }
     edit_check_roles.innerHTML = "";
 
-    fetch("/api/findAllRoles")
+    fetch(URLAllRoles)
         .then(res => res.json())
-        .then(data => {
-            data.forEach(role => {
+        .then(roles => {
+            roles.forEach(role => {
                 let option = document.createElement("option");
                 option.value = role.id;
                 option.text = role.name.substring(5);
@@ -80,16 +93,11 @@ function loadUserRoles(where) {
         })
         .catch(error => console.error(error));
 }
-window.addEventListener("load", loadUserRoles);
 
-//^^^--- user methods ---^^^
-
-
-//vvv--- admin methods ---vvv
 
 // <<< метод получения пользователя по id >>>
 async function getUserById(id) {
-    let response = await fetch("api/getUser/" + id);
+    let response = await fetch(URLGetUserById + id);
     return await response.json();
 }
 
@@ -134,6 +142,7 @@ function getUsers() {
         }
     })
 }
+
 getUsers();
 //
 // <td>
@@ -186,9 +195,8 @@ function editUser() {
                 id: formEdit.roles.options[i].value,
                 name: "ROLE_" + formEdit.roles.options[i].text
             });
-            console.log(rolesForEdit);
         }
-
+        console.log(rolesForEdit);
         fetch(URLUpdate, {
             method: 'PUT',
             headers: {
@@ -210,6 +218,7 @@ function editUser() {
         });
     });
 }
+
 editUser();
 
 
@@ -224,22 +233,60 @@ async function modalDelete(id) {
 function deleteUser() {
     formDelete.addEventListener("submit", ev => {
         ev.preventDefault();
-        fetch("/api/delete/" + formDelete.id.value, {
+        fetch(URLDelete + formDelete.id.value, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
             $('#deleteClose').click();
-            if(formDelete.id.value==currId){
-                window.location.assign("/logout");
+            if (formDelete.id.value == currId) {
+                window.location.assign(URLLogout);
             }
             getUsers();
         });
     });
 }
+
 deleteUser();
 
 
+// <<< POST метод добавления нового пользователя >>>
+function addNew() {
+    formNew.addEventListener("submit", ev => {
+        ev.preventDefault();
 
-//^^^--- admin methods ---^^^
+        let rolesForNew = [];
+        for (let i = 0; i < formNew.roles.options.length; i++) {
+            if (formNew.roles.options[i].selected)
+                rolesForNew.push({
+                    id: formNew.roles.options[i].value,
+                    name: "ROLE_" + formNew.roles.options[i].text
+
+                });
+        }
+        console.log(rolesForNew);
+        fetch(URLAddNew, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: formNew.username.value,
+                firstname: formNew.firstname.value,
+                lastname: formNew.lastname.value,
+                age: formNew.age.value,
+                email: formNew.email.value,
+                password: formNew.password.value,
+                roles: rolesForNew
+            })
+        }).then(() => {
+            formNew.reset();
+            getUsers();
+            $('#usersTable').click();
+        });
+    });
+}
+
+addNew();
+//^^^ --- admin     methods --- ^^^

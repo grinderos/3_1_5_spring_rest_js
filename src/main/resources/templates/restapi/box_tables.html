@@ -121,12 +121,15 @@
                         />
                     </div>
 
-                    <label class="font-weight-bold" for="role_checkbox_upd"
+                    <label class="font-weight-bold"
+                           for="role_checkbox_upd"
                     >Роль:</label>
                     <a id="edit_check_roles">
                         <select multiple size="2"
                                 class="form-control"
-                                id="role_checkbox_upd" name="roles" required>
+                                id="role_checkbox_upd"
+                                name="roles"
+                                required>
                         </select>
 <!--                        <input class="form-check-input"-->
 <!--                               type="checkbox"-->
@@ -235,7 +238,21 @@
                                disabled readonly/>
                     </div>
                     <div class="mb-3">
+                        <label for="password_upd"
+                               class="col-form-label"
+                        >Пароль</label>
+                        <input type="password"
+                               name="password"
+                               class="form-control"
+                               id="password_del"
+                               minlength="4"
+                               maxlength="64"
+                               disabled
+                        />
+                    </div>
+                    <div class="mb-3">
                         <label class="font-weight-bold"
+                               for="role_checkbox_del"
                         >Роль</label>
                         <a id="delete_check_roles">
                             <select multiple size="2"
@@ -279,3 +296,125 @@
 </div><!-- modal fade -->
 
 <!--^^^ модалка удаления ^^^-->
+
+<!--vvv форма добавления нового пользователя vvv-->
+
+<div th:fragment="fragment_new_user" class="tab-pane fade"
+     id="new-user">
+    <div class="card">
+        <h5 class="card-header"
+        >Добавить нового пользователя</h5>
+        <div class="card-body text-center fw-bold">
+            <form class="offset-4 col-4"
+                  id="formNew">
+
+                <label class="font-weight-bold"
+                       for="username_new"
+                >Имя пользователя</label><br>
+                <input class="form-control"
+                       type="text"
+                       name="username"
+                       id="username_new"
+                       placeholder="Логин"
+                       minlength="3"
+                       maxlength="32"
+                       required
+                /><br>
+
+                <label class="font-weight-bold"
+                       for="firstname_new"
+                >Имя</label><br>
+                <input class="form-control"
+                       type="text"
+                       name="firstname"
+                       id="firstname_new"
+                       placeholder="Имя"
+                       minlength="0"
+                       maxlength="32"
+                />
+
+                <br>
+
+                <label class="font-weight-bold"
+                       for="lastname_new"
+                >Фамилия</label><br>
+                <input class="form-control"
+                       type="text"
+                       name="lastname"
+                       id="lastname_new"
+                       placeholder="Фамилия"
+                       minlength="0"
+                       maxlength="32"
+                /><br>
+
+                <label class="font-weight-bold"
+                       for="age_new"
+                >age</label><br>
+                <input class="form-control"
+                       type="number"
+                       name="age"
+                       id="age_new"
+                       placeholder="Возраст"
+                       min="0" max="100"
+                /><br>
+
+                <label class="font-weight-bold"
+                       for="email_new"
+                >email</label><br>
+                <input class="form-control" type="text"
+                       name="email"
+                       id="email_new"
+                       placeholder="email"
+                       minlength="0"
+                       maxlength="32"
+                /><br>
+
+                <label class="font-weight-bold"
+                       for="password_new"
+                >Пароль</label><br>
+                <input class="form-control"
+                       type="password"
+                       name="password"
+                       id="password_new"
+                       placeholder="Пароль"
+                       minlength="4"
+                       maxlength="64"
+                       required
+                /><br>
+
+                <label class="font-weight-bold"
+                >Роль:</label>
+                <a id="new_check_roles">
+                    <select multiple size="2"
+                            class="form-control"
+                            id="role_checkbox_new"
+                            name="roles">
+                    </select>
+                    <!--                        <input class="form-check-input"-->
+                    <!--                               type="checkbox"-->
+                    <!--                               value=""-->
+                    <!--                               text=""-->
+                    <!--                               id="role_checkbox_upd"-->
+                    <!--                               />-->
+                </a>
+<!--                <th:block th:each="role: ${allRoles}">-->
+<!--                    <input class="form-check-input"-->
+<!--                           type="checkbox"-->
+<!--                           th:field="*{roles}"-->
+<!--                           th:text="${' '+role.name.substring(5)+' '}"-->
+<!--                           th:value="${role.id}"/>-->
+<!--                </th:block>-->
+
+                <br/><br/>
+                <div class="modal-footer justify-content-evenly">
+                    <button type="submit"
+                            class="btn btn-success"
+                    >Добавить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--^^^ форма добавления нового пользователя ^^^-->

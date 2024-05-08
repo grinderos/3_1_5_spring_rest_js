@@ -85,7 +85,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             userRepository.save(user);
         } catch (Exception e) {
             System.out.println("\nСохранение не удалось. Возможно имя пользователя уже существует в базе\n");
-            return false;
+//            throw new UserDataIntegrityViolationException(user, e.getMessage());
+//            return false;
         }
         return true;
     }

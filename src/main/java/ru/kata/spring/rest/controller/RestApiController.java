@@ -48,7 +48,7 @@ public class RestApiController {
 
     @PostMapping("/add")
     public ResponseEntity<User> add(@RequestBody User user, BindingResult bindingResult) {
-        System.out.println("\nGiven User:\n"+user);
+        System.out.println("\nNew User:\n"+user);
         userService.save(user);
         System.out.println("\nadd -->\n"+ResponseEntity.ok(userService.findByUsername(user.getUsername())));
         return ResponseEntity.ok(userService.findByUsername(user.getUsername()));

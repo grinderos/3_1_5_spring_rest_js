@@ -5,18 +5,17 @@
 
 <head th:replace="restapi/box_main :: fragment_head"/>
 <body>
-<!--  -->
 <nav th:replace="restapi/box_admin :: fragment_top_panel_admin"/>
 <div class="container-fluid">
     <div class="row">
+        <!--<<< боковая панель admin >>>-->
         <div th:replace="restapi/box_admin :: fragment_left_panel_admin"/>
-
-        <!--vvv тело вкладки боковой панели vvv-->
+        <!--<<< тело вкладки боковой панели >>>-->
         <div class="col-9">
             <div class="tab-content bg-light pt-3"
                  id="admin-tabContent">
 
-                <!--vvv Лист юзеров vvv-->
+                <!--<<< Лист юзеров >>>-->
                 <div class="tab-pane fade show active"
                      id="admin-tab"
                      role="tabpanel"
@@ -51,10 +50,8 @@
                             </button>
                         </li>
                     </ul>
-                    <!--^^^ Вкладки под лист юзеров и создание нового юзера ^^^-->
-
                     <div class="tab-content">
-                        <!--vvv Вкладка списка пользователей vvv-->
+                        <!--<<< Вкладка списка пользователей >>>-->
                         <div class="tab-pane fade show active"
                              id="all-users"
                              role="tabpanel"
@@ -62,136 +59,23 @@
                             <div class="card">
                                 <div th:replace="restapi/box_tables :: fragment_users_table_fill"/>
 <!------------------------------------------------------------------------------------------------>
-                                <!--vvv модалка редактирования vvv-->
+                                <!--<<< модалка редактирования >>>-->
                                 <div th:replace="restapi/box_tables :: fragment_users_table_edit"/>
-                                <!--^^^ модалка редактирования ^^^-->
-
-                                <!--vvv модалка удаления vvv-->
+                                <!--<<< модалка удаления >>>-->
                                 <div th:replace="restapi/box_tables :: fragment_users_table_delete"/>
-                                <!--^^^ модалка удаления ^^^-->
 <!---------------------------------------------------- --------------------------------->
-                            </div><!-- card -->
-                        </div><!-- tab-pane fade show active -->
-                        <!--  -->
-                        <div class="tab-pane fade"
-                             id="new-user">
-                            <div class="card">
-                                <h5 class="card-header"
-                                >Добавить нового пользователя</h5>
-                                <div class="card-body text-center fw-bold">
-                                    <form class="offset-4 col-4"
-                                          th:method="POST"
-                                          th:action="@{/new}"
-                                          th:object="${newUser}">
-
-                                        <label class="font-weight-bold"
-                                               for="username_new"
-                                        >Имя пользователя</label><br>
-                                        <input class="form-control"
-                                               type="text"
-                                               name="username"
-                                               id="username_new"
-                                               placeholder="Логин"
-                                               minlength="3"
-                                               maxlength="32"
-                                               required
-                                        /><br>
-
-                                        <label class="font-weight-bold"
-                                               for="firstname_new"
-                                        >Имя</label><br>
-                                        <input class="form-control"
-                                               type="text"
-                                               name="firstname"
-                                               id="firstname_new"
-                                               placeholder="Имя"
-                                               minlength="0"
-                                               maxlength="32"
-                                        />
-
-                                        <br>
-
-                                        <label class="font-weight-bold"
-                                               for="lastname_new"
-                                        >Фамилия</label><br>
-                                        <input class="form-control"
-                                               type="text"
-                                               name="lastname"
-                                               id="lastname_new"
-                                               placeholder="Фамилия"
-                                               minlength="0"
-                                               maxlength="32"
-                                        /><br>
-
-                                        <label class="font-weight-bold"
-                                               for="age_new"
-                                        >age</label><br>
-                                        <input class="form-control"
-                                               type="number"
-                                               name="age"
-                                               id="age_new"
-                                               placeholder="Возраст"
-                                               min="0" max="100"
-                                        /><br>
-
-                                        <label class="font-weight-bold"
-                                               for="email_new"
-                                        >email</label><br>
-                                        <input class="form-control" type="text"
-                                               name="email"
-                                               id="email_new"
-                                               placeholder="email"
-                                               minlength="0"
-                                               maxlength="32"
-                                        /><br>
-
-                                        <label class="font-weight-bold"
-                                               for="password_new"
-                                        >Пароль</label><br>
-                                        <input class="form-control"
-                                               type="password"
-                                               name="password"
-                                               id="password_new"
-                                               placeholder="Пароль"
-                                               minlength="4"
-                                               maxlength="64"
-                                               required
-                                        /><br>
-
-                                        <label class="font-weight-bold"
-                                        >Роль:</label>
-                                        <th:block th:each="role: ${allRoles}">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   th:field="*{roles}"
-                                                   th:text="${' '+role.name.substring(5)+' '}"
-                                                   th:value="${role.id}"/>
-                                        </th:block>
-
-                                        <br/><br/>
-                                        <div class="modal-footer justify-content-evenly">
-                                            <button type="submit"
-                                                    class="btn btn-success"
-                                            >Добавить
-                                            </button>
-                                        </div>
-                                    </form><!-- POST /update -->
-                                </div><!-- card-body text-center -->
-                            </div><!-- card -->
-                        </div><!-- tab-pane fade -->
-                    </div><!-- tab-content -->
-                    <!--^^^ Вкладка списка пользователей ^^^-->
-                </div><!-- tab-pane fade show active -->
-
-                <!--vvv информация о текущем пользователе vvv-->
+                            </div>
+                        </div>
+                        <!--<<< форма добавления нового пользователя >>>-->
+                        <div th:replace="restapi/box_tables :: fragment_new_user"/>
+                    </div>
+                </div>
+                <!--<<< информация о текущем пользователе >>>-->
                 <div th:replace="restapi/box_user :: fragment_user_info (isActive=false)"/>
-                <!--^^^ информация о текущем пользователе ^^^-->
-
-            </div><!-- tab-content bg-light pt-3 -->
-        </div><!-- col -->
-        <!--^^^ тело вкладки боковой панели ^^^-->
-    </div><!--  row   -->
-</div><!--   container-fluid     -->
+            </div>
+        </div>
+    </div>
+</div>
 <div th:replace="restapi/box_main :: fragment_scripts"/>
 </body>
 </html>
