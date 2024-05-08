@@ -8,8 +8,9 @@ let formDelete = document.forms["formDelete"];
 let currId;
 
 //vvv--- user methods ---vvv
-getCurrentUser();
 
+
+// <<< метод получения текущего пользователя >>>
 function getCurrentUser() {
     fetch(URLCurrentUser)
         .then((res) => res.json())
@@ -34,7 +35,10 @@ function getCurrentUser() {
                                 </tr>`;
         });
 }
+getCurrentUser();
 
+
+// <<< метод преобразования ролей текущего пользователя в строку >>>
 function getCurrentRoles(roles) {
     let currentRoles = "";
     for (let element of roles) {
@@ -43,11 +47,53 @@ function getCurrentRoles(roles) {
     return currentRoles;
 }
 
+
+// <<< метод получения списка имеющихся ролей из БД >>>
+function loadUserRoles(where) {
+    let edit_check_roles;
+    if(where=="upd"){
+        edit_check_roles = document.getElementById("role_checkbox_upd");
+    } else {
+        edit_check_roles = document.getElementById("role_checkbox_del");
+    }
+    edit_check_roles.innerHTML = "";
+
+    fetch("/api/findAllRoles")
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(role => {
+                let option = document.createElement("option");
+                option.value = role.id;
+                option.text = role.name.substring(5);
+                edit_check_roles.appendChild(option);
+
+
+                //let checkboxes  = document.createElement("input");
+                //console.log(checkboxes);
+                //checkboxes.class = "form-check-input";
+                //checkboxes.type = "checkbox";
+                //checkboxes.value = role.id;
+                //checkboxes.text = role.name;
+                //console.log(checkboxes);
+                //edit_check_roles.appendChild(checkboxes);
+            });
+        })
+        .catch(error => console.error(error));
+}
+window.addEventListener("load", loadUserRoles);
+
 //^^^--- user methods ---^^^
 
-//vvv--- admin methods ---vvv
-getUsers();
 
+//vvv--- admin methods ---vvv
+
+// <<< метод получения пользователя по id >>>
+async function getUserById(id) {
+    let response = await fetch("api/getUser/" + id);
+    return await response.json();
+}
+
+// <<< метод получения списка пользователей и заполнения таблицы >>>
 function getUsers() {
     fetch(URLListUsers).then(function (response) {
         return response.json();
@@ -88,6 +134,7 @@ function getUsers() {
         }
     })
 }
+getUsers();
 //
 // <td>
 //     <button className="btn btn-info btn-ml"
@@ -106,46 +153,7 @@ function getUsers() {
 //     </button>
 // </td>
 
-async function modalEdit(id) {
-    const modalEdit = new bootstrap.Modal(document.querySelector('#modalEdit'));
-    await fill_modal(formEdit, modalEdit, id);
-    loadUserRoles("upd");
-}
-
-function loadUserRoles(where) {
-    let edit_check_roles;
-    if(where=="upd"){
-    edit_check_roles = document.getElementById("role_checkbox_upd");
-    } else {
-        edit_check_roles = document.getElementById("role_checkbox_del");
-    }
-    edit_check_roles.innerHTML = "";
-
-    fetch("/api/findAllRoles")
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(role => {
-                let option = document.createElement("option");
-                option.value = role.id;
-                option.text = role.name.substring(5);
-                edit_check_roles.appendChild(option);
-
-
-                //let checkboxes  = document.createElement("input");
-                //console.log(checkboxes);
-                //checkboxes.class = "form-check-input";
-                //checkboxes.type = "checkbox";
-                //checkboxes.value = role.id;
-                //checkboxes.text = role.name;
-                //console.log(checkboxes);
-                //edit_check_roles.appendChild(checkboxes);
-            });
-        })
-        .catch(error => console.error(error));
-}
-
-window.addEventListener("load", loadUserRoles);
-
+// <<< метод заполнения модального окна >>>
 async function fill_modal(form, modal, id) {
     modal.show();
     let user = await getUserById(id);
@@ -159,11 +167,15 @@ async function fill_modal(form, modal, id) {
     form.roles.value = user.roles;
 }
 
-async function getUserById(id) {
-    let response = await fetch("api/getUser/" + id);
-    return await response.json();
+// <<< заполнение модального окна редактирования >>>
+async function modalEdit(id) {
+    const modalEdit = new bootstrap.Modal(document.querySelector('#modalEdit'));
+    await fill_modal(formEdit, modalEdit, id);
+    loadUserRoles("upd");
 }
 
+
+// <<< POST метод редактирования >>>
 function editUser() {
     formEdit.addEventListener("submit", ev => {
         ev.preventDefault();
@@ -200,12 +212,15 @@ function editUser() {
 }
 editUser();
 
+
+// <<< заполнение модального окна удаления >>>
 async function modalDelete(id) {
     const modalDelete = new bootstrap.Modal(document.querySelector('#modalDelete'));
     await fill_modal(formDelete, modalDelete, id);
     loadUserRoles("del");
 }
 
+// <<< POST метод удаления >>>
 function deleteUser() {
     formDelete.addEventListener("submit", ev => {
         ev.preventDefault();
@@ -224,4 +239,7 @@ function deleteUser() {
     });
 }
 deleteUser();
+
+
+
 //^^^--- admin methods ---^^^
