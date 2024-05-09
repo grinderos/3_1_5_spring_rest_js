@@ -12,7 +12,7 @@ let formEdit = document.forms["formEdit"];
 let formDelete = document.forms["formDelete"];
 let formNew = document.forms["formNew"];
 let currId;
-
+let currUsername;
 //vvv --- user  methods --- vvv
 
 // <<< метод получения текущего пользователя >>>
@@ -21,6 +21,8 @@ function getCurrentUser() {
         .then((res) => res.json())
         .then((currentUser) => {
             currId = currentUser.id;
+            currUsername = currentUser.username;
+
             let currentRoles = getCurrentRoles(currentUser.roles);
             top_panel_info.innerHTML = `
                                         <span>Вы вошли как: <b>${currentUser.username}</b></span 
@@ -47,8 +49,8 @@ getCurrentUser();
 // <<< метод преобразования ролей текущего пользователя в строку >>>
 function getCurrentRoles(roles) {
     let currentRoles = "";
-    for (let element of roles) {
-        currentRoles += (element.name.toString().substring(5) + " ");
+    for (let role of roles) {
+        currentRoles += (role.name.toString().substring(5) + " ");
     }
     return currentRoles;
 }
@@ -60,35 +62,44 @@ function getCurrentRoles(roles) {
 window.addEventListener("load", loadUserRoles);
 
 // <<< метод получения списка имеющихся ролей из БД >>>
-function loadUserRoles(where) {
+async function loadUserRoles(where) {
+    let disabled = "";
     let edit_check_roles;
     if (where == "upd") {
-        edit_check_roles = document.getElementById("role_checkbox_upd");
+        edit_check_roles = await document.getElementById("edit_check_roles");
     } else if (where == "del") {
-        edit_check_roles = document.getElementById("role_checkbox_del");
+        edit_check_roles = await document.getElementById("delete_check_roles");
+        disabled = "disabled";
     } else {
-        edit_check_roles = document.getElementById("role_checkbox_new");
+        edit_check_roles = await document.getElementById("new_check_roles");
+        where = "new";
     }
-    edit_check_roles.innerHTML = "";
+    if (edit_check_roles != null) {
+        await edit_check_roles.replaceChildren();
+    }
 
-    fetch(URLAllRoles)
+    await fetch(URLAllRoles)
         .then(res => res.json())
         .then(roles => {
             roles.forEach(role => {
-                let option = document.createElement("option");
-                option.value = role.id;
-                option.text = role.name.substring(5);
-                edit_check_roles.appendChild(option);
+                let inputId = role.name+'_'+where;
+                // let option = document.createElement("option");
+                // option.value = role.id;
+                // option.text = role.name.substring(5);
+                // edit_check_roles.appendChild(option);
 
-
-                //let checkboxes  = document.createElement("input");
-                //console.log(checkboxes);
-                //checkboxes.class = "form-check-input";
-                //checkboxes.type = "checkbox";
-                //checkboxes.value = role.id;
-                //checkboxes.text = role.name;
-                //console.log(checkboxes);
-                //edit_check_roles.appendChild(checkboxes);
+                edit_check_roles.innerHTML += `
+                                <label class="font-weight-bold" 
+                                for="${role.name}"
+                                >${role.name.substring(5)}</label>
+                                <input class="messageCheckbox" 
+                                type="checkbox" 
+                                value="${role.id}" 
+                                id="${inputId}"
+                                name="${role.name.substring(5)}"
+                                ${disabled}
+                                >
+                                            `;
             });
         })
         .catch(error => console.error(error));
@@ -103,6 +114,7 @@ async function getUserById(id) {
 
 // <<< метод получения списка пользователей и заполнения таблицы >>>
 function getUsers() {
+    // erase();
     fetch(URLListUsers).then(function (response) {
         return response.json();
     }).then(function (users) {
@@ -144,26 +156,21 @@ function getUsers() {
 }
 
 getUsers();
-//
-// <td>
-//     <button className="btn btn-info btn-ml"
-//             data-bs-toggle="modal"
-//             data-bs-target="#modalEdit"
-//             onClick="modalEdit(${user.id})"
-//     >Редактировать
-//     </button>
-// </td>
-// <td>
-//     <button className="btn btn-danger btn-ml"
-//             data-bs-toggle="modal"
-//             data-target="#modalDelete"
-//             onClick="modalDelete(${user.id})"
-//     >Удалить
-//     </button>
-// </td>
 
 // <<< метод заполнения модального окна >>>
-async function fill_modal(form, modal, id) {
+async function fill_modal(form, modal, id, where) {
+    let edit_check_roles;
+    if (where == "upd") {
+        edit_check_roles = await document.getElementById("edit_check_roles");
+    } else if (where == "del") {
+        edit_check_roles = await document.getElementById("delete_check_roles");
+    } else {
+        edit_check_roles = await document.getElementById("new_check_roles");
+    }
+    console.log("ЗАПОЛНЯЕМ МОДАЛКУ");
+    console.log("edit_check_roles");
+    console.log(edit_check_roles);
+
     modal.show();
     let user = await getUserById(id);
     form.id.value = user.id;
@@ -173,28 +180,56 @@ async function fill_modal(form, modal, id) {
     form.age.value = user.age;
     form.email.value = user.email;
     form.password.value = user.password;
-    form.roles.value = user.roles;
+
+
+    console.log("ПОЛУЧАЕМ ПОЛЯ С ЧЕКБОКСАМИ")
+    for( let role of user.roles){
+        let inputId = role.name+'_'+where;
+        if(role.name == "ROLE_ADMIN"){
+            await document.getElementById(inputId).click();
+            // let roleAdminCheckbox = await document.getElementById(inputId);
+            // roleAdminCheckbox.click();
+        } else if(role.name == "ROLE_USER"){
+            await document.getElementById(inputId).click();
+            // let roleUserCheckbox = await document.getElementById(inputId);
+            // await roleUserCheckbox.click();
+        }
+    }
+    // document.querySelector("input[type='checkbox'][value='ecmascript']").checked = true;
 }
 
 // <<< заполнение модального окна редактирования >>>
 async function modalEdit(id) {
-    const modalEdit = new bootstrap.Modal(document.querySelector('#modalEdit'));
-    await fill_modal(formEdit, modalEdit, id);
-    loadUserRoles("upd");
+    const modalEdit = new bootstrap.Modal(await document.querySelector('#modalEdit'));
+    await loadUserRoles("upd");
+    await fill_modal(formEdit, modalEdit, id, "upd");
+
 }
 
 
 // <<< POST метод редактирования >>>
 function editUser() {
+    let check400 = false;
     formEdit.addEventListener("submit", ev => {
         ev.preventDefault();
+        let usernameField = document.getElementById('username_upd');
 
         let rolesForEdit = [];
-        for (let i = 0; i < formEdit.roles.options.length; i++) {
-            if (formEdit.roles.options[i].selected) rolesForEdit.push({
-                id: formEdit.roles.options[i].value,
-                name: "ROLE_" + formEdit.roles.options[i].text
-            });
+        // for (let i = 0; i < formEdit.roles.options.length; i++) {
+        //     if (formEdit.roles.options[i].selected) rolesForEdit.push({
+        //         id: formEdit.roles.options[i].value,
+        //         name: "ROLE_" + formEdit.roles.options[i].text
+        //     });
+
+        let inputElements = document.getElementsByClassName('messageCheckbox');
+        for (let i = 0; inputElements[i]; ++i) {
+            if (inputElements[i].checked) {
+                rolesForEdit.push({
+                    id: inputElements[i].value,
+                    name: "ROLE_" + inputElements[i].name
+                })
+            }
+            console.log(rolesForEdit);
         }
         console.log(rolesForEdit);
         fetch(URLUpdate, {
@@ -212,10 +247,22 @@ function editUser() {
                 password: formEdit.password.value,
                 roles: rolesForEdit
             })
-        }).then(() => {
-            $('#editClose').click();
-            getUsers();
-        });
+        })
+            .then(response => {
+                check400 = checkStatus(response, usernameField);
+            })
+            .then(() => {
+                if (check400) {
+                    console.log("check400==true");
+                    getUsers();
+                } else {
+                    if (formEdit.id.value == currId && formEdit.username.value != currUsername) {
+                        window.location.assign(URLLogout);
+                    }
+                    $('#editClose').click();
+                    getUsers();
+                }
+            });
     });
 }
 
@@ -224,9 +271,9 @@ editUser();
 
 // <<< заполнение модального окна удаления >>>
 async function modalDelete(id) {
-    const modalDelete = new bootstrap.Modal(document.querySelector('#modalDelete'));
-    await fill_modal(formDelete, modalDelete, id);
-    loadUserRoles("del");
+    const modalDelete = new bootstrap.Modal(await document.querySelector('#modalDelete'));
+    await loadUserRoles("del");
+    await fill_modal(formDelete, modalDelete, id, "del");
 }
 
 // <<< POST метод удаления >>>
@@ -239,10 +286,10 @@ function deleteUser() {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            $('#deleteClose').click();
             if (formDelete.id.value == currId) {
                 window.location.assign(URLLogout);
             }
+            $('#deleteClose').click();
             getUsers();
         });
     });
@@ -253,19 +300,33 @@ deleteUser();
 
 // <<< POST метод добавления нового пользователя >>>
 function addNew() {
+    let check400 = false;
     formNew.addEventListener("submit", ev => {
         ev.preventDefault();
+        let usernameField = document.getElementById('username_new');
 
         let rolesForNew = [];
-        for (let i = 0; i < formNew.roles.options.length; i++) {
-            if (formNew.roles.options[i].selected)
-                rolesForNew.push({
-                    id: formNew.roles.options[i].value,
-                    name: "ROLE_" + formNew.roles.options[i].text
+        // for (let i = 0; i < formNew.roles.options.length; i++) {
+        //     if (formNew.roles.options[i].selected)
+        //         rolesForNew.push({
+        //             id: formNew.roles.options[i].value,
+        //             name: "ROLE_" + formNew.roles.options[i].text
+        //
+        //         });
 
-                });
+        let inputElements = document.getElementsByClassName(  'messageCheckbox');
+        console.log(inputElements);
+        for (let i = 0; inputElements[i]; ++i) {
+            if (inputElements[i].checked) {
+                rolesForNew.push({
+                    id: inputElements[i].value,
+                    name: "ROLE_" + inputElements[i].name
+                })
+            }
         }
         console.log(rolesForNew);
+
+        // usernameField.innerHTML="";
         fetch(URLAddNew, {
             method: 'POST',
             headers: {
@@ -280,13 +341,47 @@ function addNew() {
                 password: formNew.password.value,
                 roles: rolesForNew
             })
-        }).then(() => {
-            formNew.reset();
-            getUsers();
-            $('#usersTable').click();
-        });
+        })
+            .then(response => {
+                check400 = checkStatus(response, usernameField);
+            })
+            .then(() => {
+                if (check400) {
+                    getUsers();
+                } else {
+                    formNew.reset();
+                    getUsers();
+                    $('#users-list-tab').click();
+                }
+            });
     });
 }
 
 addNew();
+
+function erase(usernameField) {
+    usernameField.classList.remove('is-invalid');
+    let err;
+    if ((err = document.getElementById('errorDiv')) != null) {
+        err.remove();
+    }
+}
+
+function checkStatus(response, usernameField) {
+    if (response.status === 400) {
+        console.log("status 400")
+        usernameField.classList.add('is-invalid');
+        let errorDiv = document.createElement('div');
+        errorDiv.id = 'errorDiv';
+        errorDiv.innerText = 'Имя пользователя должно быть уникальным';
+        usernameField.parentElement.append(errorDiv);
+        setTimeout(() => {
+            erase(usernameField);
+        }, 3000);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 //^^^ --- admin     methods --- ^^^

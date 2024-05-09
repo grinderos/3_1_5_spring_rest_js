@@ -121,22 +121,24 @@
                         />
                     </div>
 
+                    <!--                    <label class="font-weight-bold"-->
+                    <!--                           for="role_checkbox_upd"-->
+                    <!--                    >Роль:</label>-->
                     <label class="font-weight-bold"
-                           for="role_checkbox_upd"
                     >Роль:</label>
                     <a id="edit_check_roles">
-                        <select multiple size="2"
-                                class="form-control"
-                                id="role_checkbox_upd"
-                                name="roles"
-                                required>
-                        </select>
-<!--                        <input class="form-check-input"-->
-<!--                               type="checkbox"-->
-<!--                               value=""-->
-<!--                               text=""-->
-<!--                               id="role_checkbox_upd"-->
-<!--                               />-->
+                        <!--                        <select multiple size="2"-->
+                        <!--                                class="form-control"-->
+                        <!--                                id="role_checkbox_upd"-->
+                        <!--                                name="roles"-->
+                        <!--                                required>-->
+                        <!--                        </select>-->
+                        <!--                        <input class="form-check-input"-->
+                        <!--                               type="checkbox"-->
+                        <!--                               value=""-->
+                        <!--                               text=""-->
+                        <!--                               id="role_checkbox_upd"-->
+                        <!--                               />-->
                     </a>
                 </div><!--  -->
                 <div class="modal-footer justify-content-evenly">
@@ -147,7 +149,7 @@
                     >Закрыть
                     </button>
                     <button type="submit"
-                           class="btn btn-success"
+                            class="btn btn-success"
                     >Обновить
                     </button>
                 </div>
@@ -250,33 +252,16 @@
                                disabled
                         />
                     </div>
-                    <div class="mb-3">
-                        <label class="font-weight-bold"
-                               for="role_checkbox_del"
-                        >Роль</label>
-                        <a id="delete_check_roles">
-                            <select multiple size="2"
-                                    class="form-control"
-                                    id="role_checkbox_del"
-                                    name="roles"
-                                    disabled>
-                            </select>
-                            <!--                        <input class="form-check-input"-->
-                            <!--                               type="checkbox"-->
-                            <!--                               value=""-->
-                            <!--                               text=""-->
-                            <!--                               id="role_checkbox_upd"-->
-                            <!--                               />-->
-                        </a>
-<!--                        <h6 class="form-heading text-center" id="allRoles">-->
-<!--                            <th:block th:each="role: ${user.roles}">-->
-<!--                                <span type="checkbox"-->
-<!--                                      id="roles_del"-->
-<!--                                      th:text="${' '+role.name.substring(5)+' '}">-->
-<!--                                </span>-->
-<!--                            </th:block>-->
-<!--                        </h6>-->
-                    </div>
+                    <label class="font-weight-bold"
+                    >Роль: </label>
+                    <a id="delete_check_roles" aria-disabled>
+                        <!--                            <select multiple size="2"-->
+                        <!--                                    class="form-control"-->
+                        <!--                                    id="role_checkbox_del"-->
+                        <!--                                    name="roles"-->
+                        <!--                                    disabled>-->
+                        <!--                            </select>-->
+                    </a>
                 </div>
                 <div class="modal-footer justify-content-evenly">
                     <button type="button"
@@ -307,20 +292,22 @@
         <div class="card-body text-center fw-bold">
             <form class="offset-4 col-4"
                   id="formNew">
-
-                <label class="font-weight-bold"
-                       for="username_new"
-                >Имя пользователя</label><br>
-                <input class="form-control"
-                       type="text"
-                       name="username"
-                       id="username_new"
-                       placeholder="Логин"
-                       minlength="3"
-                       maxlength="32"
-                       required
-                /><br>
-
+                <div id="usernameFieldOuter">
+                    <label class="font-weight-bold"
+                           for="username_new"
+                    >Имя пользователя</label><br>
+                    <input class="form-control"
+                           type="text"
+                           name="username"
+                           id="username_new"
+                           placeholder="Логин"
+                           minlength="3"
+                           maxlength="32"
+                           autocomplete="username"
+                           required
+                    />
+                </div>
+                <br>
                 <label class="font-weight-bold"
                        for="firstname_new"
                 >Имя</label><br>
@@ -385,26 +372,12 @@
                 <label class="font-weight-bold"
                 >Роль:</label>
                 <a id="new_check_roles">
-                    <select multiple size="2"
-                            class="form-control"
-                            id="role_checkbox_new"
-                            name="roles">
-                    </select>
-                    <!--                        <input class="form-check-input"-->
-                    <!--                               type="checkbox"-->
-                    <!--                               value=""-->
-                    <!--                               text=""-->
-                    <!--                               id="role_checkbox_upd"-->
-                    <!--                               />-->
+                    <!--                    <select multiple size="2"-->
+                    <!--                            class="form-control"-->
+                    <!--                            id="role_checkbox_new"-->
+                    <!--                            name="roles">-->
+                    <!--                    </select>-->
                 </a>
-<!--                <th:block th:each="role: ${allRoles}">-->
-<!--                    <input class="form-check-input"-->
-<!--                           type="checkbox"-->
-<!--                           th:field="*{roles}"-->
-<!--                           th:text="${' '+role.name.substring(5)+' '}"-->
-<!--                           th:value="${role.id}"/>-->
-<!--                </th:block>-->
-
                 <br/><br/>
                 <div class="modal-footer justify-content-evenly">
                     <button type="submit"

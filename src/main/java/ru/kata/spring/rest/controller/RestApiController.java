@@ -30,35 +30,33 @@ public class RestApiController {
 
     @GetMapping("/getUsers")
     public ResponseEntity<List<User>> getUsers() {
-        System.out.println("\nfindAll -->\n"+ResponseEntity.ok(userService.getUsers()));
         return ResponseEntity.ok(userService.getUsers());
     }
 
     @GetMapping("/getUser/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        System.out.println("\ngetUser -->\n"+ResponseEntity.ok(userService.findUserById(id)));
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @GetMapping("/getCurrentUser")
     public ResponseEntity<User> getCurrentUser(Authentication auth) {
-        System.out.println("\ngetCurrentUser -->\n"+ResponseEntity.ok(userService.findByUsername(auth.getName())));
         return ResponseEntity.ok(userService.findByUsername(auth.getName()));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> add(@RequestBody User user, BindingResult bindingResult) {
-        System.out.println("\nNew User:\n"+user);
+    public ResponseEntity<User> add(@RequestBody User user) {
+        if(userService.findByUsername(user.getUsername())!=null){
+            return ResponseEntity.badRequest().body(user);
+        }
         userService.save(user);
-        System.out.println("\nadd -->\n"+ResponseEntity.ok(userService.findByUsername(user.getUsername())));
         return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> update(@RequestBody User user, BindingResult bindingResult) {
-        System.out.println("\nGiven User:\n"+user);
-        userService.update(user);
-        System.out.println("\nupdate -->\n"+ResponseEntity.ok(userService.findUserById(user.getId())));
+    public ResponseEntity<User> update(@RequestBody User user) {
+        if(!userService.update(user)) {
+            return ResponseEntity.badRequest().body(user);
+        }
         return ResponseEntity.ok(userService.findUserById(user.getId()));
     }
 

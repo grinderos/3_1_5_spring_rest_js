@@ -29,8 +29,8 @@ public class AuthController {
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userService
-            ,SecurityService securityService
-            ,UserValidator userValidator
+            , SecurityService securityService
+            , UserValidator userValidator
     ) {
         this.userService = userService;
         this.securityService = securityService;
@@ -51,8 +51,8 @@ public class AuthController {
         }
         if (securityService.isAuthenticated()) {
             System.out.println("this user authenticated");
-            if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-            return "redirect:/admin/";
+            if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                return "redirect:/admin/";
             else return "redirect:/user";
         }
         if (error != null)
