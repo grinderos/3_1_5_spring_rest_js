@@ -1,10 +1,10 @@
-const URLCurrentUser = "/api/getCurrentUser";
-const URLListUsers = "/api/getUsers";
-const URLGetUserById = "/api/getUser/";
-const URLUpdate = "api/update";
-const URLDelete = "/api/delete/";
-const URLAddNew = "/api/add/";
-const URLAllRoles = "/api/findAllRoles";
+const URLCurrentUser = "/api/user/getCurrentUser";
+const URLListUsers = "/api/admin/getUsers";
+const URLGetUserById = "/api/admin/getUser/";
+const URLUpdate = "api/admin/update";
+const URLDelete = "/api/admin/delete/";
+const URLAddNew = "/api/admin/add/";
+const URLAllRoles = "/api/admin/findAllRoles";
 const URLLogout = "/logout";
 const top_panel_info = document.getElementById('top_panel_info');
 const table_user_info = document.getElementById('table_user_info');
@@ -42,7 +42,6 @@ function getCurrentUser() {
                                 </tr>`;
         });
 }
-
 getCurrentUser();
 
 
@@ -83,10 +82,6 @@ async function loadUserRoles(where) {
         .then(roles => {
             roles.forEach(role => {
                 let inputId = role.name+'_'+where;
-                // let option = document.createElement("option");
-                // option.value = role.id;
-                // option.text = role.name.substring(5);
-                // edit_check_roles.appendChild(option);
 
                 edit_check_roles.innerHTML += `
                                 <label class="font-weight-bold" 
@@ -98,8 +93,7 @@ async function loadUserRoles(where) {
                                 id="${inputId}"
                                 name="${role.name.substring(5)}"
                                 ${disabled}
-                                >
-                                            `;
+                                >`;
             });
         })
         .catch(error => console.error(error));
@@ -154,22 +148,11 @@ function getUsers() {
         }
     })
 }
-
 getUsers();
+
 
 // <<< метод заполнения модального окна >>>
 async function fill_modal(form, modal, id, where) {
-    let edit_check_roles;
-    if (where == "upd") {
-        edit_check_roles = await document.getElementById("edit_check_roles");
-    } else if (where == "del") {
-        edit_check_roles = await document.getElementById("delete_check_roles");
-    } else {
-        edit_check_roles = await document.getElementById("new_check_roles");
-    }
-    console.log("ЗАПОЛНЯЕМ МОДАЛКУ");
-    console.log("edit_check_roles");
-    console.log(edit_check_roles);
 
     modal.show();
     let user = await getUserById(id);
@@ -181,21 +164,14 @@ async function fill_modal(form, modal, id, where) {
     form.email.value = user.email;
     form.password.value = user.password;
 
-
-    console.log("ПОЛУЧАЕМ ПОЛЯ С ЧЕКБОКСАМИ")
     for( let role of user.roles){
         let inputId = role.name+'_'+where;
         if(role.name == "ROLE_ADMIN"){
             await document.getElementById(inputId).click();
-            // let roleAdminCheckbox = await document.getElementById(inputId);
-            // roleAdminCheckbox.click();
         } else if(role.name == "ROLE_USER"){
             await document.getElementById(inputId).click();
-            // let roleUserCheckbox = await document.getElementById(inputId);
-            // await roleUserCheckbox.click();
         }
     }
-    // document.querySelector("input[type='checkbox'][value='ecmascript']").checked = true;
 }
 
 // <<< заполнение модального окна редактирования >>>
@@ -203,7 +179,6 @@ async function modalEdit(id) {
     const modalEdit = new bootstrap.Modal(await document.querySelector('#modalEdit'));
     await loadUserRoles("upd");
     await fill_modal(formEdit, modalEdit, id, "upd");
-
 }
 
 
@@ -215,12 +190,6 @@ function editUser() {
         let usernameField = document.getElementById('username_upd');
 
         let rolesForEdit = [];
-        // for (let i = 0; i < formEdit.roles.options.length; i++) {
-        //     if (formEdit.roles.options[i].selected) rolesForEdit.push({
-        //         id: formEdit.roles.options[i].value,
-        //         name: "ROLE_" + formEdit.roles.options[i].text
-        //     });
-
         let inputElements = document.getElementsByClassName('messageCheckbox');
         for (let i = 0; inputElements[i]; ++i) {
             if (inputElements[i].checked) {
@@ -256,16 +225,18 @@ function editUser() {
                     console.log("check400==true");
                     getUsers();
                 } else {
-                    if (formEdit.id.value == currId && formEdit.username.value != currUsername) {
-                        window.location.assign(URLLogout);
-                    }
+                    if (formEdit.id.value == currId
+                        && formEdit.username.value != currUsername) {window.location.assign(URLLogout);}
+                    let hasAdmin = false;
+                    rolesForEdit.forEach(role => {if (role.name == "ROLE_ADMIN"){hasAdmin=true;}})
+                    if(formEdit.id.value == currId && rolesForEdit.length>0 && !hasAdmin)
+                    {window.location.assign(URLLogout);}
                     $('#editClose').click();
                     getUsers();
                 }
             });
     });
 }
-
 editUser();
 
 
@@ -294,7 +265,6 @@ function deleteUser() {
         });
     });
 }
-
 deleteUser();
 
 
@@ -306,16 +276,9 @@ function addNew() {
         let usernameField = document.getElementById('username_new');
 
         let rolesForNew = [];
-        // for (let i = 0; i < formNew.roles.options.length; i++) {
-        //     if (formNew.roles.options[i].selected)
-        //         rolesForNew.push({
-        //             id: formNew.roles.options[i].value,
-        //             name: "ROLE_" + formNew.roles.options[i].text
-        //
-        //         });
-
-        let inputElements = document.getElementsByClassName(  'messageCheckbox');
-        console.log(inputElements);
+        let inputElements = [];
+        inputElements.push(document.getElementById(  'ROLE_ADMIN_new'));
+        inputElements.push(document.getElementById(  'ROLE_USER_new'));
         for (let i = 0; inputElements[i]; ++i) {
             if (inputElements[i].checked) {
                 rolesForNew.push({
@@ -326,7 +289,6 @@ function addNew() {
         }
         console.log(rolesForNew);
 
-        // usernameField.innerHTML="";
         fetch(URLAddNew, {
             method: 'POST',
             headers: {
@@ -356,7 +318,6 @@ function addNew() {
             });
     });
 }
-
 addNew();
 
 function erase(usernameField) {

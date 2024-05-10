@@ -1,6 +1,8 @@
 package ru.kata.spring.rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -51,6 +53,16 @@ public class UserValidator implements Validator {
 
         if (user.getPasswordConfirm() == null || !user.getPasswordConfirm().equals(user.getPassword())) {
             errors.rejectValue("passwordConfirm", "", "Пароли не совпадают");
+        }
+    }
+
+    public void checkRoles(User user, Authentication auth){
+        if (user.getRoles().isEmpty() &&
+                user.getUsername().equals(auth.getName()) &&
+                auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            user.addRole(userDetailsService.findRoleByName("ROLE_ADMIN"));
+        } else if (user.getRoles().isEmpty()) {
+            user.addRole(userDetailsService.findRoleByName("ROLE_USER"));
         }
     }
 }

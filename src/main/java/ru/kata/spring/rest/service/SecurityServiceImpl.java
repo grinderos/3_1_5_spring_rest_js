@@ -39,16 +39,11 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        setAuthentication(userDetails, username, password);
-    }
-
-    public void setAuthentication(UserDetails userDetails, String username, String password) {
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         authenticationManager.authenticate(token);
         if (token.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(token);
-            logger.debug(String.format("Успешный автоматический вход '%s'!", username));
         }
     }
 }

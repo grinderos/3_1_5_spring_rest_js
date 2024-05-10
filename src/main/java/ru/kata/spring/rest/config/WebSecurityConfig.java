@@ -26,14 +26,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() //отключаем защиту от межсайтовой подделки запросов
                 .authorizeRequests()
-                .antMatchers("/api/**").permitAll()
                 .antMatchers("/", "/start", "/login", "/auth/**", "/error", "/fillUsers", "/fillRoles", "/truncate", "/logout")
                 .permitAll()
-                .antMatchers("/admin", "/update", "/delete", "/new").hasRole("ADMIN")
-//                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/admin","/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/user", "/api/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
 
-//                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .successHandler(successUserHandler)
@@ -42,7 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-//                .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll();
     }
