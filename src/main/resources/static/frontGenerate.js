@@ -6,8 +6,9 @@ const URLDelete = "/api/admin/delete/";
 const URLAddNew = "/api/admin/add/";
 const URLAllRoles = "/api/admin/findAllRoles";
 const URLLogout = "/logout";
-const top_panel_info = document.getElementById('top_panel_info');
-const table_user_info = document.getElementById('table_user_info');
+let top_panel_info = document.getElementById('top_panel_info');
+let table_user_info = document.getElementById('table_user_info');
+let side_user_tab = document.getElementById('side-user-tab');
 let formEdit = document.forms["formEdit"];
 let formDelete = document.forms["formDelete"];
 let formNew = document.forms["formNew"];
@@ -95,8 +96,7 @@ async function loadUserRoles(where) {
                                 ${disabled}
                                 >`;
             });
-        })
-        .catch(error => console.error(error));
+        });
 }
 
 
@@ -198,9 +198,7 @@ function editUser() {
                     name: "ROLE_" + inputElements[i].name
                 })
             }
-            console.log(rolesForEdit);
         }
-        console.log(rolesForEdit);
         fetch(URLUpdate, {
             method: 'PUT',
             headers: {
@@ -222,7 +220,6 @@ function editUser() {
             })
             .then(() => {
                 if (check400) {
-                    console.log("check400==true");
                     getUsers();
                 } else {
                     if (formEdit.id.value == currId
@@ -231,8 +228,10 @@ function editUser() {
                     rolesForEdit.forEach(role => {if (role.name == "ROLE_ADMIN"){hasAdmin=true;}})
                     if(formEdit.id.value == currId && rolesForEdit.length>0 && !hasAdmin)
                     {window.location.assign(URLLogout);}
-                    $('#editClose').click();
+                    document.getElementById('editClose').click();
+                    getCurrentUser();
                     getUsers();
+
                 }
             });
     });
@@ -260,7 +259,7 @@ function deleteUser() {
             if (formDelete.id.value == currId) {
                 window.location.assign(URLLogout);
             }
-            $('#deleteClose').click();
+            document.getElementById('deleteClose').click();
             getUsers();
         });
     });
@@ -287,7 +286,6 @@ function addNew() {
                 })
             }
         }
-        console.log(rolesForNew);
 
         fetch(URLAddNew, {
             method: 'POST',
@@ -313,7 +311,7 @@ function addNew() {
                 } else {
                     formNew.reset();
                     getUsers();
-                    $('#users-list-tab').click();
+                    document.getElementById('users-list-tab').click();
                 }
             });
     });
@@ -330,7 +328,6 @@ function erase(usernameField) {
 
 function checkStatus(response, usernameField) {
     if (response.status === 400) {
-        console.log("status 400")
         usernameField.classList.add('is-invalid');
         let errorDiv = document.createElement('div');
         errorDiv.id = 'errorDiv';

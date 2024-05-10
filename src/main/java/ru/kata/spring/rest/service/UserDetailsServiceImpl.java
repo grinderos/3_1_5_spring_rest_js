@@ -48,28 +48,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     //<<<<< repository block >>>>>
-    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    @Transactional(readOnly = true)
     public User findUserById(Long id) {
         Optional<User> userFromDb = userRepository.findById(id);
         return userFromDb.orElse(new User());
     }
 
-    @Transactional(readOnly = true)
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public List<Role> getRoles() {
         return roleRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Role findRoleByName(String name) {
         return roleRepository.findByName(name);
     }

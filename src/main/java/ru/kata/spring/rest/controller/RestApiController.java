@@ -67,7 +67,6 @@ public class RestApiController {
 
     @GetMapping("/admin/findAllRoles")
     public ResponseEntity<List<Role>> findAllRoles() {
-        System.out.println("\nfindAllRoles -->\n" + ResponseEntity.ok(userService.getRoles()));
         return ResponseEntity.ok(userService.getRoles());
     }
 }
