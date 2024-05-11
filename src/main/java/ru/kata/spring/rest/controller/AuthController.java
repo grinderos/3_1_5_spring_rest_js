@@ -44,21 +44,18 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(Model model, String error, String logout, Authentication auth) {
-        System.out.println("сработал /login");
+    public String login(Model model, String error, Authentication auth) {
         if (userService.getUsers().isEmpty()) {
             return "redirect:auth/register";
         }
         if (securityService.isAuthenticated()) {
-            System.out.println("this user authenticated");
             if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                return "redirect:/admin/";
+                return "redirect:/admin";
             else return "redirect:/user";
         }
-        if (error != null)
+        if (error != null) {
             model.addAttribute("error", "Имя пользователя или пароль не совпадают");
-        if (logout != null)
-            model.addAttribute("message", "Успешный выход из системы");
+        }
         return "auth/login";
     }
 
