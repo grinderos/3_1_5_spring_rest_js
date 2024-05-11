@@ -9,16 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ru.kata.spring.rest.service.PasswordEncoder;
 
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final SuccessUserHandler successUserHandler;
+    private final AuthenticationSuccessHandler successUserHandler;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(AuthenticationSuccessHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
     }
 
@@ -26,7 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() //отключаем защиту от межсайтовой подделки запросов
                 .authorizeRequests()
-                .antMatchers("/", "/start", "/login", "/auth/**", "/error", "/fillUsers", "/fillRoles", "/truncate", "/logout")
+                .antMatchers("/", "/start", "/login", "/auth/**",
+                        "/fillUsers", "/fillRoles", "/truncate", "/logout")
                 .permitAll()
                 .antMatchers("/admin","/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/user", "/api/user/**").hasAnyRole("USER", "ADMIN")
