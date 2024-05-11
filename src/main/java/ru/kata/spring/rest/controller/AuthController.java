@@ -17,7 +17,7 @@ import ru.kata.spring.rest.service.UserDetailsServiceImpl;
 import ru.kata.spring.rest.service.UserValidator;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 @Controller
 public class AuthController {
@@ -25,7 +25,7 @@ public class AuthController {
     private UserDetailsServiceImpl userService;
     private SecurityService securityService;
     private UserValidator userValidator;
-    private List<Role> roles;
+    private Collection<Role> roles;
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userService

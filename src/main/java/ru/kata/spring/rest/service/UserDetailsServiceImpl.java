@@ -13,10 +13,10 @@ import ru.kata.spring.rest.model.User;
 import ru.kata.spring.rest.repositories.RoleRepository;
 import ru.kata.spring.rest.repositories.UserRepository;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (Role role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
@@ -57,11 +57,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userFromDb.orElse(new User());
     }
 
-    public List<User> getUsers() {
+    public Collection<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public List<Role> getRoles() {
+    public Collection<Role> getRoles() {
         return roleRepository.findAll();
     }
 

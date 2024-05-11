@@ -27,6 +27,7 @@ public class SecurityServiceImpl implements SecurityService {
         this.userDetailsService = userDetailsService;
     }
 
+    @Override
     public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null ||

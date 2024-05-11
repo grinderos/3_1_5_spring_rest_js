@@ -10,7 +10,7 @@ import ru.kata.spring.rest.model.User;
 import ru.kata.spring.rest.service.UserDetailsServiceImpl;
 import ru.kata.spring.rest.service.UserValidator;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api")
@@ -25,19 +25,19 @@ public class RestApiController {
         this.userValidator = userValidator;
     }
 
+    @GetMapping("/user/getCurrentUser")
+    public ResponseEntity<User> getCurrentUser(Authentication auth) {
+        return ResponseEntity.ok(userService.findByUsername(auth.getName()));
+    }
+
     @GetMapping("/admin/getUsers")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<Collection<User>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
     @GetMapping("/admin/getUser/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
-    }
-
-    @GetMapping("/user/getCurrentUser")
-    public ResponseEntity<User> getCurrentUser(Authentication auth) {
-        return ResponseEntity.ok(userService.findByUsername(auth.getName()));
     }
 
     @PostMapping("/admin/add")
@@ -66,7 +66,7 @@ public class RestApiController {
     }
 
     @GetMapping("/admin/findAllRoles")
-    public ResponseEntity<List<Role>> findAllRoles() {
+    public ResponseEntity<Collection<Role>> findAllRoles() {
         return ResponseEntity.ok(userService.getRoles());
     }
 }

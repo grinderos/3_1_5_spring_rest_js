@@ -25,9 +25,9 @@ public class UserController {
 
     @GetMapping("/admin")
     public String getAdminPanel(Authentication auth) {
-        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return "/admin/admin_panel";
-        } else return "redirect:/user";
+        if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return "redirect:/user";
+        } else return "/admin/admin_panel";
     }
 
     @GetMapping("/fillUsers")
