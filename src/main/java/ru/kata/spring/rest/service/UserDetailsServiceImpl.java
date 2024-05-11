@@ -130,7 +130,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (loadedUserFromDB == null) {
             save(admin);
         }
-        loadedUserFromDB = null;
         loadedUserFromDB = findByUsername(user.getUsername());
         if (loadedUserFromDB == null) {
             save(user);
