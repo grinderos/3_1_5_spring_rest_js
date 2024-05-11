@@ -3,6 +3,7 @@ package ru.kata.spring.rest.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
+    public AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(PasswordEncoder.bCryptPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
