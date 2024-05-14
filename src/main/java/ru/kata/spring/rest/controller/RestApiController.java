@@ -7,8 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.rest.model.Role;
 import ru.kata.spring.rest.model.User;
-import ru.kata.spring.rest.service.UserDetailsServiceImpl;
-import ru.kata.spring.rest.service.UserValidator;
+import ru.kata.spring.rest.service.*;
 
 import java.util.Collection;
 
@@ -16,13 +15,15 @@ import java.util.Collection;
 @RequestMapping("/api")
 public class RestApiController {
 
-    private UserDetailsServiceImpl userService;
-    private UserValidator userValidator;
+    private UserService userService;
+    private RoleService roleService;
+    private RolesChecker rolesChecker;
 
     @Autowired
-    public RestApiController(UserDetailsServiceImpl userService, UserValidator userValidator) {
+    public RestApiController(UserService userService, RolesChecker rolesChecker, RoleService roleService) {
         this.userService = userService;
-        this.userValidator = userValidator;
+        this.roleService = roleService;
+        this.rolesChecker = rolesChecker;
     }
 
     @GetMapping("/user/getCurrentUser")
@@ -42,21 +43,19 @@ public class RestApiController {
 
     @PostMapping("/admin/add")
     public ResponseEntity<User> add(@RequestBody User user, Authentication auth) {
-        if (userService.findByUsername(user.getUsername()) != null) {
-            return ResponseEntity.badRequest().body(user);
-        }
-        userValidator.checkRoles(user, auth);
+//        if (userService.findByUsername(user.getUsername()) != null) {
+//            return ResponseEntity.badRequest().body(user);
+//        }
+        rolesChecker.checkRoles(user, auth);
         userService.save(user);
-        return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
+//        return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
+        return ResponseEntity.ok(userService.save(user));
     }
 
     @PutMapping("/admin/update")
     public ResponseEntity<User> update(@RequestBody User user, Authentication auth) {
-        userValidator.checkRoles(user, auth);
-        if (!userService.update(user)) {
-            return ResponseEntity.badRequest().body(user);
-        }
-        return ResponseEntity.ok(userService.findUserById(user.getId()));
+        rolesChecker.checkRoles(user, auth);
+        return ResponseEntity.ok(userService.update(user));
     }
 
     @DeleteMapping("/admin/delete/{id}")
@@ -67,6 +66,17 @@ public class RestApiController {
 
     @GetMapping("/admin/findAllRoles")
     public ResponseEntity<Collection<Role>> findAllRoles() {
-        return ResponseEntity.ok(userService.getRoles());
+        return ResponseEntity.ok(roleService.getRoles());
+    }
+
+    @PostMapping("/admin/register")
+    public ResponseEntity<User> reg(@RequestBody User user, Authentication auth) {
+//        if (userService.findByUsername(user.getUsername()) != null) {
+//            return ResponseEntity.badRequest().body(user);
+//        }
+//        userValidator.checkRoles(user, auth);
+        userService.save(user);
+//        return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
+        return ResponseEntity.ok(userService.save(user));
     }
 }

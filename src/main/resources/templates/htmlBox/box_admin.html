@@ -4,10 +4,10 @@
     <div class="container-fluid">
         <ul class="navbar-nav mb-auto">
             <li class="navbar-brand">
-                <form th:replace="restapi/box_admin :: fragment_admin_top_info"/>
+                <form th:replace="htmlBox/box_admin :: fragment_admin_top_info"/>
             </li>
         </ul>
-        <ul th:replace="restapi/box_main :: fragment_logout"/>
+        <ul th:replace="htmlBox/box_main :: fragment_logout"/>
         </ul>
     </div>
 </nav>
@@ -30,7 +30,7 @@
             <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
         </svg>
     </button>
-    <a th:replace="restapi/box_main :: fragment_top_panel_info"/>
+    <a th:replace="htmlBox/box_main :: fragment_top_panel_info"/>
 </form>
 <!--^^^ ссылка на admin ^^^-->
 

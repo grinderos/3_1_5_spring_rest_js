@@ -4,10 +4,10 @@
     <div class="container-fluid">
         <ul class="navbar-nav mb-auto">
             <li class="navbar-brand">
-                <form th:replace="restapi/box_user :: fragment_top_info_user"/>
+                <form th:replace="htmlBox/box_user :: fragment_top_info_user"/>
             </li>
         </ul>
-        <ul th:replace="restapi/box_main :: fragment_logout"/>
+        <ul th:replace="htmlBox/box_main :: fragment_logout"/>
     </div>
 </nav>
 <!--^^^ верхняя панель user ^^^-->
@@ -30,7 +30,7 @@
         </svg>
     </button>
 
-    <a th:replace="restapi/box_main :: fragment_top_panel_info"/>
+    <a th:replace="htmlBox/box_main :: fragment_top_panel_info"/>
 </form>
 <!--^^^ ссылка на user ^^^-->
 

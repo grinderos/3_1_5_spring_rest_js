@@ -1,47 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <title>Log in with your account</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:replace="htmlBox/box_main :: fragment_head"/>
 <body>
 <br/><br/>
 <div class="container">
-    <form class="form" method="POST" th:action="@{/process_login}">
-
+    <form class="form-signin" th:method="POST" th:action="@{/process_login}">
         <div class="form-group">
             <div class="d-grid gap-2 col-3 mx-auto">
-                <th:block th:each="msg : ${messages}">
-                    <h6 class="text-danger"
-                        th:text="${msg}"></h6>
-                </th:block>
                 <h2 class="form-heading text-center">Форма авторизации</h2><br/>
                 <input name="username"
                        type="text"
                        class="form-control"
                        placeholder="Имя пользователя"
                        autofocus="true"/><br/>
-
                 <input name="password"
                        type="password"
                        class="form-control"
                        placeholder="Пароль"/>
-                <span class="has-error"
-                      th:text="${error}"></span><br/>
 
-                <button class="btn btn-ml btn-success btn-block"
+                </br>
+                <button class="btn btn-ml btn-primary btn-block"
                         type="submit"
-                >Вход</button>
+                >Вход
+                </button>
                 <br/>
-                <a class="btn btn-ml btn-primary btn-block"
-                   th:href="@{/auth/register}"
-                   target="_self"
-                >Регистрация</a>
 
+                <div class="alert alert-info text-center" role="alert">
+                    <p><b>Логин&nbsp&nbsp&nbsp= пароль</b><br/>
+                        admin=admin<br/>
+                        user=user
+                </div>
             </div>
         </div>
     </form>

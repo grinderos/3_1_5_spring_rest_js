@@ -8,7 +8,6 @@ const URLAllRoles = "/api/admin/findAllRoles";
 const URLLogout = "/logout";
 let top_panel_info = document.getElementById('top_panel_info');
 let table_user_info = document.getElementById('table_user_info');
-let side_user_tab = document.getElementById('side-user-tab');
 let formEdit = document.forms["formEdit"];
 let formDelete = document.forms["formDelete"];
 let formNew = document.forms["formNew"];
@@ -43,6 +42,7 @@ function getCurrentUser() {
                                 </tr>`;
         });
 }
+
 getCurrentUser();
 
 
@@ -65,15 +65,21 @@ window.addEventListener("load", loadUserRoles);
 async function loadUserRoles(where) {
     let disabled = "";
     let edit_check_roles;
-    if (where == "upd") {
-        edit_check_roles = await document.getElementById("edit_check_roles");
-    } else if (where == "del") {
-        edit_check_roles = await document.getElementById("delete_check_roles");
-        disabled = "disabled";
-    } else {
-        edit_check_roles = await document.getElementById("new_check_roles");
-        where = "new";
+
+    switch (where) {
+        case "upd":
+            edit_check_roles = await document.getElementById("edit_check_roles");
+            break;
+        case "del":
+            edit_check_roles = await document.getElementById("delete_check_roles");
+            disabled = "disabled";
+            break;
+        default :
+            edit_check_roles = await document.getElementById("new_check_roles");
+            where = "new";
+            break;
     }
+
     if (edit_check_roles != null) {
         await edit_check_roles.replaceChildren();
     }
@@ -82,7 +88,7 @@ async function loadUserRoles(where) {
         .then(res => res.json())
         .then(roles => {
             roles.forEach(role => {
-                let inputId = role.name+'_'+where;
+                let inputId = role.name + '_' + where;
 
                 edit_check_roles.innerHTML += `
                                 <label class="font-weight-bold" 
@@ -148,6 +154,7 @@ function getUsers() {
         }
     })
 }
+
 getUsers();
 
 
@@ -164,12 +171,14 @@ async function fill_modal(form, modal, id, where) {
     form.email.value = user.email;
     form.password.value = user.password;
 
-    for( let role of user.roles){
-        let inputId = role.name+'_'+where;
-        if(role.name == "ROLE_ADMIN"){
-            await document.getElementById(inputId).click();
-        } else if(role.name == "ROLE_USER"){
-            await document.getElementById(inputId).click();
+    for (let role of user.roles) {
+        let inputId = role.name + '_' + where;
+        if (role.name == "ROLE_ADMIN") {
+            let adminCheck = await document.getElementById(inputId);
+            adminCheck.checked = true;
+        } else if (role.name == "ROLE_USER") {
+           let userCheck = await document.getElementById(inputId);
+            userCheck.checked = true;
         }
     }
 }
@@ -223,11 +232,18 @@ function editUser() {
                     getUsers();
                 } else {
                     if (formEdit.id.value == currId
-                        && formEdit.username.value != currUsername) {window.location.assign(URLLogout);}
+                        && formEdit.username.value != currUsername) {
+                        window.location.assign(URLLogout);
+                    }
                     let hasAdmin = false;
-                    rolesForEdit.forEach(role => {if (role.name == "ROLE_ADMIN"){hasAdmin=true;}})
-                    if(formEdit.id.value == currId && rolesForEdit.length>0 && !hasAdmin)
-                    {window.location.assign(URLLogout);}
+                    rolesForEdit.forEach(role => {
+                        if (role.name == "ROLE_ADMIN") {
+                            hasAdmin = true;
+                        }
+                    })
+                    if (formEdit.id.value == currId && rolesForEdit.length > 0 && !hasAdmin) {
+                        window.location.assign(URLLogout);
+                    }
                     document.getElementById('editClose').click();
                     getCurrentUser();
                     getUsers();
@@ -236,6 +252,7 @@ function editUser() {
             });
     });
 }
+
 editUser();
 
 
@@ -264,20 +281,21 @@ function deleteUser() {
         });
     });
 }
+
 deleteUser();
 
 
 // <<< POST метод добавления нового пользователя >>>
 function addNew() {
-    let check400 = false;
+    // let check400 = false;
     formNew.addEventListener("submit", ev => {
         ev.preventDefault();
         let usernameField = document.getElementById('username_new');
 
         let rolesForNew = [];
         let inputElements = [];
-        inputElements.push(document.getElementById(  'ROLE_ADMIN_new'));
-        inputElements.push(document.getElementById(  'ROLE_USER_new'));
+        inputElements.push(document.getElementById('ROLE_ADMIN_new'));
+        inputElements.push(document.getElementById('ROLE_USER_new'));
         for (let i = 0; inputElements[i]; ++i) {
             if (inputElements[i].checked) {
                 rolesForNew.push({
@@ -303,19 +321,19 @@ function addNew() {
             })
         })
             .then(response => {
-                check400 = checkStatus(response, usernameField);
+                response.json().then(() => {
+                    if (checkStatus(response, usernameField)) {
+                        getUsers();
+                    } else {
+                        formNew.reset();
+                        getUsers();
+                        document.getElementById('users-list-tab').click();
+                    }
+                })
             })
-            .then(() => {
-                if (check400) {
-                    getUsers();
-                } else {
-                    formNew.reset();
-                    getUsers();
-                    document.getElementById('users-list-tab').click();
-                }
-            });
     });
 }
+
 addNew();
 
 function erase(usernameField) {
@@ -331,7 +349,7 @@ function checkStatus(response, usernameField) {
         usernameField.classList.add('is-invalid');
         let errorDiv = document.createElement('div');
         errorDiv.id = 'errorDiv';
-        errorDiv.innerText = 'Имя пользователя должно быть уникальным';
+        errorDiv.innerText = 'Такое имя пользователя уже занято';
         usernameField.parentElement.append(errorDiv);
         setTimeout(() => {
             erase(usernameField);
