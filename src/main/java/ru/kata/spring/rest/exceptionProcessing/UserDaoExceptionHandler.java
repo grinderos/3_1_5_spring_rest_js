@@ -10,9 +10,6 @@ public class UserDaoExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleUserDataIntegrityViolation(UserDaoException ex) {
-        System.out.println("ApiExceptionHandler handleUserDataIntegrityViolation");
-        System.out.println(ex.getMessage());
-        return new ResponseEntity<>(new BadResponseEntityData(ex.getUser()
-                , "Такое имя пользователя уже занято"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getUser(), HttpStatus.BAD_REQUEST);
     }
 }

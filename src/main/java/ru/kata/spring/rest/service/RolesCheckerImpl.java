@@ -7,14 +7,15 @@ import ru.kata.spring.rest.model.User;
 import ru.kata.spring.rest.repositories.RoleRepository;
 
 @Component
-public class RolesCheckerImpl implements RolesChecker{
+public class RolesCheckerImpl implements RolesChecker {
     RoleRepository roleRepository;
 
     public RolesCheckerImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
-    public void checkRoles(User user, Authentication auth){
+    @Override
+    public void checkRoles(User user, Authentication auth) {
         if (user.getRoles().isEmpty() &&
                 user.getUsername().equals(auth.getName()) &&
                 auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {

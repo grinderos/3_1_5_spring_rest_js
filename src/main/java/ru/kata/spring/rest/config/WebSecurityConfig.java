@@ -11,36 +11,31 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-//import ru.kata.spring.rest.service.PasswordEncoder;
 
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationSuccessHandler successUserHandler;
-    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Autowired
-    public WebSecurityConfig(AuthenticationSuccessHandler successUserHandler
-            , AuthenticationFailureHandler authenticationFailureHandler) {
+    public WebSecurityConfig(AuthenticationSuccessHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
-        this.authenticationFailureHandler = authenticationFailureHandler;
     }
 
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable() //отключаем защиту от межсайтовой подделки запросов
                 .authorizeRequests()
-                .antMatchers("/admin","/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin", "/admin/", "/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/user", "/api/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
 
                 .and()
                 .formLogin()
                 .successHandler(successUserHandler)
-                .failureHandler(authenticationFailureHandler)
                 .loginPage("/login")
                 .loginProcessingUrl("/process_login")
                 .permitAll()
@@ -53,7 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(PasswordEncoder.bCryptPasswordEncoder());
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;

@@ -36,19 +36,14 @@ public class RestApiController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @GetMapping("/admin/getUser/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+    @GetMapping("/admin/get/{id}")
+    public ResponseEntity<User> get(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @PostMapping("/admin/add")
     public ResponseEntity<User> add(@RequestBody User user, Authentication auth) {
-//        if (userService.findByUsername(user.getUsername()) != null) {
-//            return ResponseEntity.badRequest().body(user);
-//        }
         rolesChecker.checkRoles(user, auth);
-        userService.save(user);
-//        return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
         return ResponseEntity.ok(userService.save(user));
     }
 
@@ -67,16 +62,5 @@ public class RestApiController {
     @GetMapping("/admin/findAllRoles")
     public ResponseEntity<Collection<Role>> findAllRoles() {
         return ResponseEntity.ok(roleService.getRoles());
-    }
-
-    @PostMapping("/admin/register")
-    public ResponseEntity<User> reg(@RequestBody User user, Authentication auth) {
-//        if (userService.findByUsername(user.getUsername()) != null) {
-//            return ResponseEntity.badRequest().body(user);
-//        }
-//        userValidator.checkRoles(user, auth);
-        userService.save(user);
-//        return ResponseEntity.ok(userService.findByUsername(user.getUsername()));
-        return ResponseEntity.ok(userService.save(user));
     }
 }

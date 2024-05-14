@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.rest.model.Role;
 import ru.kata.spring.rest.model.User;
-import ru.kata.spring.rest.repositories.RoleRepository;
 import ru.kata.spring.rest.repositories.UserRepository;
 
 import java.util.Collection;
@@ -20,12 +19,10 @@ import java.util.HashSet;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
-    private RoleRepository roleRepository;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
     @Override

@@ -5,6 +5,9 @@ import ru.kata.spring.rest.model.Role;
 import java.util.Collection;
 
 public interface RoleService {
-    public Collection<Role> getRoles();
-    public Role findRoleByName(String name);
+    Collection<Role> getRoles();
+
+    Role findByName(String name);
+
+    Role save(Role role);
 }

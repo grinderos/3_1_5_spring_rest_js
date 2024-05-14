@@ -1,6 +1,6 @@
 const URLCurrentUser = "/api/user/getCurrentUser";
 const URLListUsers = "/api/admin/getUsers";
-const URLGetUserById = "/api/admin/getUser/";
+const URLGetUserById = "/api/admin/get/";
 const URLUpdate = "api/admin/update";
 const URLDelete = "/api/admin/delete/";
 const URLAddNew = "/api/admin/add";
@@ -174,11 +174,9 @@ async function fill_modal(form, modal, id, where) {
     for (let role of user.roles) {
         let inputId = role.name + '_' + where;
         if (role.name == "ROLE_ADMIN") {
-            let adminCheck = await document.getElementById(inputId);
-            adminCheck.checked = true;
+            await document.getElementById(inputId).click();
         } else if (role.name == "ROLE_USER") {
-           let userCheck = await document.getElementById(inputId);
-            userCheck.checked = true;
+            await document.getElementById(inputId).click();
         }
     }
 }
@@ -223,12 +221,9 @@ function editUser() {
                 password: formEdit.password.value,
                 roles: rolesForEdit
             })
-        })
-            .then(response => {
-                check400 = checkStatus(response, usernameField);
-            })
-            .then(() => {
-                if (check400) {
+        }).then(response => {
+            response.json().then(() => {
+                if (checkStatus(response, usernameField)) {
                     getUsers();
                 } else {
                     if (formEdit.id.value == currId
@@ -249,7 +244,8 @@ function editUser() {
                     getUsers();
 
                 }
-            });
+            })
+        })
     });
 }
 
@@ -347,7 +343,11 @@ function erase(usernameField) {
 function checkStatus(response, usernameField) {
     if (response.status === 400) {
         usernameField.classList.add('is-invalid');
-        let errorDiv = document.createElement('div');
+        let errorDiv = document.getElementById('errorDiv');
+        if(errorDiv!=null){
+            return true;
+        }
+        errorDiv = document.createElement('div');
         errorDiv.id = 'errorDiv';
         errorDiv.innerText = 'Такое имя пользователя уже занято';
         usernameField.parentElement.append(errorDiv);

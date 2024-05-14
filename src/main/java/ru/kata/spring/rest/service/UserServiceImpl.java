@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService{
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -38,34 +39,17 @@ public class UserServiceImpl implements UserService{
         return userFromDb.orElse(new User());
     }
 
+    @Override
     public Collection<User> getUsers() {
         return userRepository.findAll();
     }
 
-//    @Transactional
-//    public boolean save(User user) {
-//        User loadedUserFromDB = findByUsername(user.getUsername());
-//        if (loadedUserFromDB != null) {
-//            return false;
-//        }
-//        user.setPassword(PasswordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
-//        try {
-//            userRepository.save(user);
-//        } catch (Exception e) {
-//            System.out.println("\nСохранение не удалось. Возможно имя пользователя уже существует в базе\n");
-//            return false;
-//        }
-//        return true;
-//    }
 
+    @Override
     @Transactional
     public User save(User user) {
-//        User loadedUserFromDB = findByUsername(user.getUsername());
-//        if (loadedUserFromDB != null) {
-//            return false;
-//        }
         String enteringPassword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(enteringPassword));
         try {
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
@@ -75,13 +59,14 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
     @Transactional
     public User update(User user) {
         User loadedUserFromDB;
-//        if ((loadedUserFromDB = findByUsername(user.getUsername())) != null &&
-//                !loadedUserFromDB.getId().equals(user.getId())) {
-//            return false;
-//        }
+        if ((loadedUserFromDB = findByUsername(user.getUsername())) != null &&
+                !loadedUserFromDB.getId().equals(user.getId())) {
+            throw new UserDaoException(user, "Такое имя пользователя уже занято");
+        }
         loadedUserFromDB = findUserById(user.getId());
         String enteringPassword = user.getPassword();
         if (user.getPassword() == null ||
@@ -92,7 +77,7 @@ public class UserServiceImpl implements UserService{
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         try {
-            userRepository.save(user);
+            user = userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
             user.setPassword(enteringPassword);
             throw new UserDaoException(user, ex.getMessage());
@@ -100,12 +85,14 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
     @Transactional
     public void deleteUserById(Long id) {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
         }
     }
+
 
     @Transactional
     public void fillUsers() {

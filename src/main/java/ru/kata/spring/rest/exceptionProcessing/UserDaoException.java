@@ -2,7 +2,7 @@ package ru.kata.spring.rest.exceptionProcessing;
 
 import ru.kata.spring.rest.model.User;
 
-public class UserDaoException extends RuntimeException{
+public class UserDaoException extends RuntimeException {
     private final User user;
     private final String message;
 
