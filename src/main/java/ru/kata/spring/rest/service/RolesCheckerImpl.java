@@ -1,5 +1,6 @@
 package ru.kata.spring.rest.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -8,8 +9,10 @@ import ru.kata.spring.rest.repositories.RoleRepository;
 
 @Component
 public class RolesCheckerImpl implements RolesChecker {
+
     RoleRepository roleRepository;
 
+    @Autowired
     public RolesCheckerImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
