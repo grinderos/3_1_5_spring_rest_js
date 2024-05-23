@@ -1,7 +1,6 @@
 package ru.kata.spring.rest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -32,35 +31,34 @@ public class RestApiController {
     }
 
     @GetMapping("/admin/getUsers")
-    public ResponseEntity<Collection<User>> getUsers() {
-        return ResponseEntity.ok(userService.getUsers());
+    public Collection<User> getUsers() {
+        return userService.getUsers();
     }
 
     @GetMapping("/admin/get/{id}")
-    public ResponseEntity<User> get(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(userService.findUserById(id));
+    public User get(@PathVariable("id") Long id) {
+        return userService.findUserById(id);
     }
 
     @PostMapping("/admin/add")
-    public ResponseEntity<User> add(@RequestBody User user, Authentication auth) {
+    public User add(@RequestBody User user, Authentication auth) {
         rolesChecker.checkRoles(user, auth);
-        return ResponseEntity.ok(userService.save(user));
+        return userService.save(user);
     }
 
     @PutMapping("/admin/update")
-    public ResponseEntity<User> update(@RequestBody User user, Authentication auth) {
+    public User update(@RequestBody User user, Authentication auth) {
         rolesChecker.checkRoles(user, auth);
-        return ResponseEntity.ok(userService.update(user));
+        return userService.update(user);
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         userService.deleteUserById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/admin/findAllRoles")
-    public ResponseEntity<Collection<Role>> findAllRoles() {
-        return ResponseEntity.ok(roleService.getRoles());
+    public Collection<Role> findAllRoles() {
+        return roleService.getRoles();
     }
 }
