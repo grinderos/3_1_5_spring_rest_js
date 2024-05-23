@@ -26,8 +26,8 @@ public class RestApiController {
     }
 
     @GetMapping("/user/getCurrentUser")
-    public ResponseEntity<User> getCurrentUser(Authentication auth) {
-        return ResponseEntity.ok(userService.findByUsername(auth.getName()));
+    public User getCurrentUser(Authentication auth) {
+        return userService.findByUsername(auth.getName());
     }
 
     @GetMapping("/admin/getUsers")
