@@ -35,12 +35,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public User findUserById(Long id) {
+        System.out.println("find User By Id");
         Optional<User> userFromDb = userRepository.findById(id);
         return userFromDb.orElse(new User());
     }
 
     @Override
     public Collection<User> getUsers() {
+        System.out.println("GET ALL USERS");
         return userRepository.findAll();
     }
 

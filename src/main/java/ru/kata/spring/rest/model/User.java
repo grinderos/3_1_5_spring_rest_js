@@ -1,5 +1,6 @@
 package ru.kata.spring.rest.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,7 +38,8 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE) //
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SUBSELECT)
+//    @BatchSize(size = 2)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
