@@ -14,5 +14,5 @@ services:
   rest_js:
     build: ..
     ports:
-      - 8090:8080
+      - 8080:8080
     restart: on-failure
